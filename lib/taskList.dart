@@ -25,9 +25,24 @@ Widget _listItem(context, task) {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Checkbox(value: false, onChanged: ((value) {})),
+          Checkbox(
+              checkColor: Colors.black,
+              activeColor: Colors.transparent,
+              value: task.checked,
+              onChanged: ((value) {
+                var state = Provider.of<MyState>(context, listen: false);
+                if (!task.checked) {
+                  state.checkTask(task);
+                } else {
+                  state.uncheckTask(task);
+                }
+              })),
           Text(task.name,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  decoration:
+                      task.checked ? TextDecoration.lineThrough : null)),
           Spacer(),
           Container(
               // padding: EdgeInsets.only(right: 8),
