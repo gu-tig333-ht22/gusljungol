@@ -46,7 +46,9 @@ class ListPage extends StatelessWidget {
                 MaterialPageRoute(
                     builder: (context) =>
                         addView(Task(id: '', title: '', done: false))));
-            Provider.of<MyState>(context, listen: false).addTask(newTask);
+            if (newTask != null) {
+              Provider.of<MyState>(context, listen: false).addTask(newTask);
+            }
           },
           child: Icon(Icons.add, size: 52)),
     );

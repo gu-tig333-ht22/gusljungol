@@ -16,9 +16,6 @@ class Task {
 }
 
 class MyState extends ChangeNotifier {
-//API KEY
-//2ff216a5-d5d1-411b-b758-1f2d18ad5645
-
   String _filter = 'Show All';
   String get filter => _filter;
 
