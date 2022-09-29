@@ -16,9 +16,27 @@ class ListPage extends StatelessWidget {
       appBar: MainAppBar(
         title: 'TIG169 TODO',
         backgroundColor: Colors.grey,
+        actionBar: [
+          PopupMenuButton(
+            icon: Icon(Icons.more_vert, color: Colors.black, size: 28),
+            itemBuilder: (BuildContext context) {
+              return {'Show All', 'Completed', 'Uncompleted'}
+                  .map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+            onSelected: (value) {
+              var state = Provider.of<MyState>(context, listen: false);
+              state.updateFilter(value as String);
+            },
+          )
+        ],
       ),
       body: Consumer<MyState>(
-        builder: (context, state, child) => TaskList(state.list),
+        builder: (context, state, child) => TaskList(state.list, state.filter),
       ),
       floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.grey,
@@ -27,8 +45,10 @@ class ListPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        addView(Task(name: 'message', checked: false))));
-            Provider.of<MyState>(context, listen: false).addTask(newTask);
+                        addView(Task(id: '', title: '', done: false))));
+            if (newTask != null) {
+              Provider.of<MyState>(context, listen: false).addTask(newTask);
+            }
           },
           child: Icon(Icons.add, size: 52)),
     );

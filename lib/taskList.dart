@@ -5,14 +5,28 @@ import 'model.dart';
 class TaskList extends StatelessWidget {
   final List<Task> list;
 
-  TaskList(this.list);
+  String filter;
+
+  TaskList(this.list, this.filter);
 
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemBuilder: (context, index) => _listItem(context, list[index]),
-        padding: EdgeInsets.only(top: 15),
-        scrollDirection: Axis.vertical,
-        itemCount: list.length);
+      itemCount: list.length,
+      itemBuilder: (context, index) {
+        var state = Provider.of<MyState>(context, listen: false);
+        if (state.filter == 'Uncompleted' && list[index].done == false) {
+          return _listItem(context, list[index]);
+        } else if (state.filter == 'Completed' && list[index].done == true) {
+          return _listItem(context, list[index]);
+        } else if (state.filter == "Show All") {
+          return _listItem(context, list[index]);
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+      padding: EdgeInsets.only(top: 15),
+      scrollDirection: Axis.vertical,
+    );
   }
 }
 
@@ -28,21 +42,20 @@ Widget _listItem(context, task) {
           Checkbox(
               checkColor: Colors.black,
               activeColor: Colors.transparent,
-              value: task.checked,
+              value: task.done,
               onChanged: ((value) {
                 var state = Provider.of<MyState>(context, listen: false);
-                if (!task.checked) {
+                if (!task.done) {
                   state.checkTask(task);
                 } else {
                   state.uncheckTask(task);
                 }
               })),
-          Text(task.name,
+          Text(task.title,
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
-                  decoration:
-                      task.checked ? TextDecoration.lineThrough : null)),
+                  decoration: task.done ? TextDecoration.lineThrough : null)),
           Spacer(),
           Container(
               // padding: EdgeInsets.only(right: 8),

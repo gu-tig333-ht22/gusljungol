@@ -1,34 +1,76 @@
 import 'package:flutter/material.dart';
+import 'InternetFetcher.dart';
 
 class Task {
-  String name;
-  bool checked;
+  String? id;
+  String? title;
+  bool? done;
 
-  Task({required this.name, required this.checked});
+  Task({this.id, this.title, this.done});
+
+  Task.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    done = json['done'];
+  }
 }
 
 class MyState extends ChangeNotifier {
-  List<Task> _list = [];
+  String _filter = 'Show All';
+  String get filter => _filter;
 
+  void updateFilter(String newValue) {
+    _filter = newValue;
+    notifyListeners();
+  }
+
+  List<Task> _list = [];
   List<Task> get list => _list;
 
-  void addTask(Task task) {
-    _list.add(task);
+  void fetchTasks() async {
+    var list = await Fetcher.fetchTasks();
+    _list = list;
     notifyListeners();
   }
 
-  void deleteTask(Task task) {
-    _list.remove(task);
+  MyState() {
+    fetchTasks();
+  }
+
+  void addTask(Task task) async {
+    await Fetcher.addTask(task.title ?? '', task.done ?? false);
+    fetchTasks();
     notifyListeners();
   }
 
-  void checkTask(Task task) {
-    task.checked = true;
+  void deleteTask(Task task) async {
+    await Fetcher.deleteTask(task.id ?? '');
+    fetchTasks();
     notifyListeners();
   }
 
-  void uncheckTask(Task task) {
-    task.checked = false;
-    notifyListeners();
+  void updateTask(Task task) async {
+    if (task.title != null && task.done != null) {
+      await Fetcher.updateTask(
+          task.id ?? '', task.title ?? '', task.done ?? false);
+      fetchTasks();
+      notifyListeners();
+    }
+  }
+
+  void checkTask(Task task) async {
+    if (task.title != null && task.done != null) {
+      await Fetcher.updateTask(task.id ?? '', task.title ?? '', true);
+      fetchTasks();
+      notifyListeners();
+    }
+  }
+
+  void uncheckTask(Task task) async {
+    if (task.title != null && task.done != null) {
+      await Fetcher.updateTask(task.id ?? '', task.title ?? '', false);
+      fetchTasks();
+      notifyListeners();
+    }
   }
 }

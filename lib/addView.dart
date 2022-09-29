@@ -18,9 +18,7 @@ class _addViewState extends State<addView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: MainAppBar(
-          title: 'New Item',
-          backgroundColor: Colors.blue,
-        ),
+            title: 'New Item', backgroundColor: Colors.blue, actionBar: []),
         body: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           _taskInputField(),
           Container(height: 36),
@@ -48,8 +46,8 @@ class _addViewState extends State<addView> {
   Widget _addTaskButton(context) {
     return FlatButton(
         onPressed: () {
-          Navigator.pop(context,
-              Task(name: taskNameInput.text.toString(), checked: false));
+          Navigator.pop(
+              context, Task(title: taskNameInput.text.toString(), done: false));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
